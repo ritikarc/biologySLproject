@@ -1,0 +1,11 @@
+package Vaccination;
+
+public class Adult {
+	// int ID; // the number assigned to the person - it is the array location don't sweat it 
+	boolean isInfected = false; // Whether or not the person is infected
+	boolean isVaccinated = false; // Whether or not the person is vaccinated successfully?
+	
+	public Adult() {
+		
+	}
+}

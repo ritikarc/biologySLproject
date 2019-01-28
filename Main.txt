@@ -1,0 +1,106 @@
+package Vaccination;
+
+import java.util.Random; 
+
+public class Main {
+	public static int population = 500;
+	public static Random rand = new Random(); // The general random number generator
+	public static Adult[] adults = new Adult[population]; // Total number of adults
+	public static void main(String[] args) { 
+		// Group of humans together (500?)
+		// A small number of people initially have the flu (0, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500)
+		// The manipulated variable is how many people get the flu vaccine 
+		// There will be a certain number of random "interactions" after which we see how many people are infected
+		// If they are vaccinated then they will not contract the disease nor spread it.
+		// We want to see how many people have the flu in the end. 
+		
+		infect(50); // choose a standard number
+		
+		System.out.println("The total initial infectees are: " + countInfected());
+		
+		vaccinate(50); // manipulated variable
+		
+		System.out.println("The total successful vaccinated people are: " + countVaccinated());
+		
+		interact(1000); // standard number - not sure what it will be yet
+		
+		System.out.println("The total final infectees are: " + countInfected());	
+		
+		
+		
+	}
+	
+	public static void vaccinate(int num) { // num decides how many people get vaccinated 
+		//Should include a random assignment of numbers up to 100 to a randomly selected group of num people
+		
+		//If the person already has the flu then they are unsuccessfully vaccinated automatically.
+		int index = num;
+		while(index > 0) {
+			int adultIndex = rand.nextInt(population) + 1; 
+			if (!adults[adultIndex].isVaccinated) {
+				int vaccineSuccessRate = rand.nextInt(100) + 1;
+				if (vaccineSuccessRate <= 63) { // CHANGE THIS PART TO REFLECT THE EFFECTIVENESS OF THE VACCINE LATER
+					adults[adultIndex].isVaccinated = true;
+				}
+				index--;
+			}
+		}
+	}
+	
+	public static void interact(int meetings) { // meetings indicate the number of interactions
+		int meetingCount = meetings; 
+		int indexA; 
+		int indexB; 
+		while (meetingCount > 0) {
+			indexA = rand.nextInt(population) + 1;
+			indexB = rand.nextInt(population) + 1; 
+			while (indexA == indexB) {
+				indexB = rand.nextInt(population) + 1; 
+			}
+			
+			if (adults[indexA].isInfected) { // If the first person is infected
+				if(!adults[indexB].isVaccinated) { // and the second person is not vaccinated
+					adults[indexB].isInfected = true; // infect the second person.
+				}
+			} else if (adults[indexB].isInfected) { // If the second person is infected
+				if(!adults[indexA].isVaccinated) { // and the first person is not vaccinated
+					adults[indexA].isInfected = true; // infect the first person
+				}
+			}
+			
+		}
+	}
+	
+	public static void infect(int initial) { // initial is the number of initial infectees
+		int initInfect = initial;
+		while (initInfect > 0) {
+			int index = rand.nextInt(population) + 1; // Randomly get a person
+			if (!adults[index].isInfected) { // If they're not infected,
+				adults[index].isInfected = true; // Infect them
+				initInfect--; // And move on to next person
+			}
+			// and if the person is a repeat then it will loop and choose again 
+		}
+	}
+	
+	public static int countVaccinated() { // gets total vaccinated adults
+		int vacCounter = 0;
+		for(int x = 0; x < population; x++) {
+			if(adults[x].isVaccinated) { 
+				vacCounter++;
+			}
+		}
+		return vacCounter;
+	}
+	
+	public static int countInfected() { // gets total infected adults
+		int infCounter = 0;
+		for(int x = 0; x < population; x++) {
+			if(adults[x].isInfected) {
+				infCounter++;
+			}
+		}
+		return infCounter;
+	}
+	
+}
